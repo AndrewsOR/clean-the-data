@@ -4,9 +4,9 @@
 
 
 
-**Mou**, the missing Markdown editor for *web developers*.[^1] 
+**Mou**, the missing Markdown editor for *web developers*.[^har] 
 
-[^1]: Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. Human Activity Recognition on Smartphones using a Multiclass Hardware-Friendly Support Vector Machine. International Workshop of Ambient Assisted Living (IWAAL 2012). Vitoria-Gasteiz, Spain. Dec 2012
+
 
 ### Syntax
 
@@ -19,7 +19,25 @@
 **Sometimes I want a lot of text to be bold.
 Like, seriously, a _LOT_ of text**
 
-#### Blockquotes
+#### Requirements for Tidy Data Set
+
+In a manner similar to Codd's third normal form, Hadley Wickham defines a dataset as "tidy data" if:
+
+* Each variable forms a column
+
+* Each obseration forms a row
+
+* Each type of observational unit forms a table[^hadley]
+
+
+
+[^har]: Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. Human Activity Recognition on Smartphones using a Multiclass Hardware-Friendly Support Vector Machine. International Workshop of Ambient Assisted Living (IWAAL 2012). Vitoria-Gasteiz, Spain. Dec 2012
+
+[^hadley]: Hadley Wickham.  Tidy Data.  Submitted to Journal of Statistical Software.  http://vita.had.co.nz/papers/tidy-data.pdf
+
+
+
+
 
 > Right angle brackets &gt; are used for block quotes.
 

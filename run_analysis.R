@@ -19,7 +19,7 @@
 #     independent tidy data set with the average of each variable for each    # 
 #     activity and each subject.                                              #
 #                                                                             #
-#     ... but please note that the order of parts is 0-1-3-4A-2-4B-5          #
+#     ...but please note that the order of parts is 0-1-3-4A-2-4B-5 (sorry)   #
 ###############################################################################
 
 # _____________________________________________________________________________
@@ -114,11 +114,12 @@
   X$obs_id <- 1:nrow(X)   # uniquely identifies a set of measurements in same row             
   library(tidyr)          # which we treat as parts of a single "observation"
   library(dplyr)
-  X %>%  gather(key=metric, value=amount, -activity_nm, -subject_id, -obs_id) %>%
-    separate(col=metric, into=c("factor_nm","stat")) %>%
-    mutate(stat = paste0(stat,"_amt")) %>%
-    arrange(activity_nm, subject_id, factor_nm, stat, obs_id) %>%
-    spread(stat, amount) -> tidyX
+  X %>%  gather(key=metric, value=amount, -activity_nm, 
+                -subject_id, -obs_id) %>% 
+           separate(col=metric, into=c("factor_nm","stat")) %>%
+              mutate(stat = paste0(stat,"_amt")) %>%
+                  arrange(activity_nm, subject_id, factor_nm, stat, obs_id) %>%
+                      spread(stat, amount) -> tidyX
 #                                                                End of part 4B
 # -----------------------------------------------------------------------------
 
@@ -127,8 +128,8 @@
 #     activity and each subject.  Write it to .txt file.
 #
   tidyX %>% group_by(factor_nm, activity_nm, subject_id)  %>%
-            summarise(mean_mean=mean(mean_amt), 
-                      mean_stdev = mean(std_amt)) -> tidyXsumm
+               summarise(mean_mean=mean(mean_amt), 
+                         mean_stdev = mean(std_amt)) -> tidyXsumm
   write.table(x=tidyXsumm, file="tidy_step_5.txt",row.names=FALSE)
 #                                                                 End of part 5
 # -----------------------------------------------------------------------------
