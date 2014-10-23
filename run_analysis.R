@@ -129,9 +129,14 @@
 #                                                                 End of part 5
 # -----------------------------------------------------------------------------
 
+<<<<<<< HEAD
 # _____________________________________________________________________________
 # Extra)  Write to codeBook.md with name and class of variables,
 #         outputting the levels of the factor variables
+=======
+# Write to codeBook.md with name and class of variables,
+#  outputting the levels of the factor variables
+>>>>>>> 442eb2fe5df3f6e42a162150e592a9bb7166ef8b
 attach(tidyXsumm)
 sink(file= "codeBook.md", append = TRUE, type = "output", split = TRUE)
 for(v in colnames(tidyXsumm)){
@@ -142,7 +147,11 @@ for(v in colnames(tidyXsumm)){
   }
 }
 sink(file=NULL)
+<<<<<<< HEAD
 detach(tidyXsumm)
 #                                                                  End of Extra
 # -----------------------------------------------------------------------------
 
+=======
+detach(tidyXsumm)
+>>>>>>> 442eb2fe5df3f6e42a162150e592a9bb7166ef8b
