@@ -32,6 +32,7 @@ In accordance with the assignment, the script performs the following tasks:
 * Creates the tidy activity data set.
 * From the data activity data set, creates a tidy summary data set with the average of each variable for each activity and each subject. (Task 5)
 * Exports the summary data set.
+* Writes column attributes of the summary data set to the codebook.
 
 Because it's easier to extract measurements (Task 2) once the descriptive variable names have been applied (Task 4), we're going to do things a little out of order.  Here is the order that the script actually takes:
 
@@ -45,7 +46,7 @@ We _rbind_ the X train and test tables, then copy the merged activity and subjec
 
 ##### Name the activities
 
-We create a new factor variable for activity name using the _activity_id_ from the _y_ tables as the index and the activity labels ("walking," etc.)as the levels.  Using a factor is almost as efficient, storage-wise, as the integer identifier, but is more intelligible (and offers other advantages not used here such as correct default interpretation by regression models).
+We create a new factor variable for activity name using the _activity_id_ from the _y_ tables as the index and the activity labels ("walking," etc.) as the levels.  Using a factor is almost as efficient, storage-wise, as the integer identifier, but is more intelligible in subsetting and output (and is correctly interpreted under default settings by regression models, if we were doing that).
   
 ##### Provide descriptive variable names
 
@@ -53,12 +54,12 @@ We use a couple regexes to make the measurement (or "feature") labels acceptable
 
 ##### Extract only the mean and standard deviation measurements
 
-Now that we have the descriptive variable names in X, we apply a regex to them to keep only the ones *ending* with "mean" or "std" (as well as the subject and activity ids).  Thus, we will keep variables that were originally "tBodyAccMag-mean()" or "fBodyAccMag-std()" but NOT "fBodyAcc-mean()-X" or "fBodyAccJerk-meanFreq()-Z".  
+Now that we have the descriptive variable names in X, we apply a regex to them to keep only the ones *ending* with "mean" or "std" (as well as the subject and activity ids).  Thus, we will keep the magnitude variables such as those that were originally "tBodyAccMag-mean()" or "fBodyAccMag-std()" but NOT directional components such as "fBodyAcc-mean()-X" or "fBodyAccJerk-meanFreq()-Z".  
 
 This was an "open question" per the Community TA:
 <https://class.coursera.org/getdata-008/forum/thread?thread_id=24>, so I am interpreting it in the easiest way.
    
-##### Create the tidy activity data set
+##### Create the tidy activity data set "tidyX"
 
 **Tidyr** requires a unique observation identifier, so we create _obs_id_ as the row number of X.  We then use gather, separate, mutate, arrange, and spread to create a data set "tidyX" with the columns:
 
@@ -71,7 +72,7 @@ This was an "open question" per the Community TA:
 
 Note that the feature name and type of stat (mean vs. std) were originally given in the same column (e.g., "fBodyBodyGyroJerkMag_mean").  These attributes had to be _separated_ before the types of stat could be _spread_ over the observation.
 
-##### Create the tidy summary data set
+##### Create the tidy summary data set "tidyXsumm"
 
 Because we are asked to calculate the mean-of-mean and mean-of-standard-deviation of the above data set, grouped by activity, subject, and feature, we use _group_by_ and _summarise_ in **plyr** to summarize the data in the data frame "tidyXsumm" with the following columns:
 
@@ -84,21 +85,25 @@ Because we are asked to calculate the mean-of-mean and mean-of-standard-deviatio
 ##### Export the tidy summary data set
 
 We write the product of the previous step to a space-delimited .txt file.  We check our factor variables (_activity_nm_ and _feature_nm_) to ensure that they do not contain spaces, which would cause problems when reading this .txt.
+
+##### Write to codeBook.md
+
+For convenience, we write the name and class of the columns of TidyXsumm to codeBook.md, appending if the file already exists.  If the column is a factor, the script outputs the levels.  This is **just a starting point** for writing the codebook.  We still have to add a title, explanatory notes, formatting, etc. by hand.
   
 ### Conclusion: Requirements for a Tidy Data Set
 
-In a manner similar to Codd's third normal form, Hadley Wickham defines a dataset as "tidy data" if:
+In a manner similar to Codd's third normal form, Hadley Wickham defines[^wic] a dataset as "tidy data" if:
 
 * Each variable forms a column
 
 * Each obseration forms a row
 
-* Each type of observational unit forms a table[^hadley]
+* Each type of observational unit forms a table
 
-This script produces data sets described above which meet these criteria.
+The data sets described above produced by this script meet these criteria.
 
 
 [^har]: Davide Anguita, Alessandro Ghio, Luca Oneto, Xavier Parra and Jorge L. Reyes-Ortiz. Human Activity Recognition on Smartphones using a Multiclass Hardware-Friendly Support Vector Machine. International Workshop of Ambient Assisted Living (IWAAL 2012). Vitoria-Gasteiz, Spain. Dec 2012
 
-[^hadley]: Hadley Wickham.  Tidy Data.  Submitted to Journal of Statistical Software.  http://vita.had.co.nz/papers/tidy-data.pdf
+[^wic]: Hadley Wickham.  Tidy Data.  Submitted to Journal of Statistical Software.  http://vita.had.co.nz/papers/tidy-data.pdf
 
