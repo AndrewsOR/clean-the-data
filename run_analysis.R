@@ -128,3 +128,21 @@
   write.table(x=tidyXsumm, file="tidy_step_5.txt",row.names=FALSE)
 #                                                                 End of part 5
 # -----------------------------------------------------------------------------
+
+# _____________________________________________________________________________
+# Extra)  Write to codeBook.md with name and class of variables,
+#         outputting the levels of the factor variables
+attach(tidyXsumm)
+sink(file= "codeBook.md", append = TRUE, type = "output", split = TRUE)
+for(v in colnames(tidyXsumm)){
+  writeLines(c("",""))  
+  writeLines( paste0( v, ": ", class(get(v)) ) )
+  if( is.factor(get(v)) ){
+    writeLines(c("", paste0(1:length(levels(get(v))), ". ", levels(get(v))) ))
+  }
+}
+sink(file=NULL)
+detach(tidyXsumm)
+#                                                                  End of Extra
+# -----------------------------------------------------------------------------
+
