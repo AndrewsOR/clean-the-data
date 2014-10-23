@@ -49,7 +49,7 @@ The original Human Activity Recognition (HAR) data source is more fully describe
 
 #### Data Attributes
 
-The data included in this summary dataset are summary statistics (averages of mean and standard deviation) for featured measurements for the given activity as performed by the given human subject.
+The data included in this summary dataset are summary statistics (averages of mean and standard deviation) for featured measurements for the given activity as performed by the given human subject.  Note that since the data have been normalized, there are no "units."  
 
 
 * **feature_nm**: factor which names the type of signal identified by the first part of the feature name given in features.txt in the HAR source.
