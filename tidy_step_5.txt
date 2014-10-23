@@ -1,4 +1,4 @@
-"factor_nm" "activity_nm" "subject_id" "mean_mean" "mean_stdev"
+"feature_nm" "activity_nm" "subject_id" "mean_mean" "mean_stdev"
 "fBodyAccMag" "WALKING" 1 -0.128623450629474 -0.398032586842105
 "fBodyAccMag" "WALKING" 2 -0.324289427932203 -0.577105211694915
 "fBodyAccMag" "WALKING" 3 -0.290031535172414 -0.456373080862069

@@ -44,15 +44,11 @@
                           colClasses=c("integer","character"))
   # Read the training and test sets
   for(set in c("test","train")){
-    subj_file_nm <- paste0(har_loc,set,"/subject_",set,".txt")
-    cat("Reading ",subj_file_nm,"...\n")
-    subj_df_nm <- paste0("subj_",set)
-    assign(subj_df_nm, read.table(subj_file_nm))
-    for(dim in c("X","y")){
-      act_file_nm <- paste0(har_loc,set,"/",dim,"_",set,".txt")
-      act_df_nm <- paste0(dim,"_",set)
-      cat("Reading ",act_file_nm,"...\n")
-      assign(act_df_nm, read.table(act_file_nm))
+    for(dim in c("X","y","subject")){
+      f <- paste0(har_loc,set,"/",dim,"_",set,".txt")
+      df <- paste0(dim,"_",set)
+      cat("Reading ",f,"...\n")
+      assign(df, read.table(f))
     }
   }
 #                                                                 End of part 0
@@ -62,11 +58,9 @@
 # 1)   Merge the training and the test sets to create one data set (named "X")
 #      Combine the training and the test sets with activity and subject ids
 #
-  X <- rbind(X_test,X_train)
-  y <- rbind(y_test,y_train)
-  subj <- rbind(subj_test, subj_train)
-  names(y)<-"activity_id"
-  names(subj)<-"subject_id"
+  X <- rbind(X_train, X_test)
+  X$activity_id <- unlist(rbind(y_train, y_test))
+  X$subject_id <-  unlist(rbind(subject_train, subject_test))
 #|                                                                End of part 1
 # -----------------------------------------------------------------------------
 
@@ -76,9 +70,9 @@
 #      Use activity labels as factors instead of their respective activity_ids
 #      (originally found in the "y" activity label files).
 #
-  X$activity_nm <- factor(act_labs$activity_nm[y$activity_id], 
+  X$activity_nm <- factor(act_labs$activity_nm[X$activity_id], 
                          levels = act_labs$activity_nm)
-  X$subject_id <- subj$subject_id
+  X$activity_id <- NULL # redundant
 #                                                                 End of part 3
 # -----------------------------------------------------------------------------
 
@@ -96,12 +90,12 @@
 
 # _____________________________________________________________________________
 # 2)   Extract only the measurements on the mean and standard deviation. 
-#      Keep only activity_nm and vars *ending* with "mean" or "std".  Thus,
-#      we will keep variables that were originally "tBodyAccMag-mean()" or
-#      "fBodyAccMag-std()" but NOT "fBodyAcc-mean()-X" or 
-#      "fBodyAccJerk-meanFreq()-Z".  This was an "open question" per the 
-#       Community TA:
-#       https://class.coursera.org/getdata-008/forum/thread?thread_id=24
+#      Keep only activity_nm, subject_id, and vars *ending* with "mean" or 
+#      "std".  Thus, we will keep variables that were originally 
+#      "tBodyAccMag-mean()" or "fBodyAccMag-std()" but NOT "fBodyAcc-mean()-X"
+#      or "fBodyAccJerk-meanFreq()-Z".  This was an "open question" per the 
+#      Community TA:
+#      https://class.coursera.org/getdata-008/forum/thread?thread_id=24
 #
   X <- X[,grepl("^activity_nm$|^subject_id$|^.+_(mean|std)$", names(X),
                 ignore.case=TRUE)]
@@ -116,9 +110,10 @@
   library(dplyr)
   X %>%  gather(key=metric, value=amount, -activity_nm, 
                 -subject_id, -obs_id) %>% 
-           separate(col=metric, into=c("factor_nm","stat")) %>%
-              mutate(stat = paste0(stat,"_amt")) %>%
-                  arrange(activity_nm, subject_id, factor_nm, stat, obs_id) %>%
+           separate(col=metric, into=c("feature_nm","stat")) %>%
+              mutate(stat = paste0(stat,"_amt"), 
+                     feature_nm = as.factor(feature_nm)) %>%
+                  arrange(activity_nm, subject_id, feature_nm, stat, obs_id) %>%
                       spread(stat, amount) -> tidyX
 #                                                                End of part 4B
 # -----------------------------------------------------------------------------
@@ -127,10 +122,9 @@
 # 5)  Create summary "tidyXsumm" from 4B with average of each variable for each 
 #     activity and each subject.  Write it to .txt file.
 #
-  tidyX %>% group_by(factor_nm, activity_nm, subject_id)  %>%
+  tidyX %>% group_by(feature_nm, activity_nm, subject_id)  %>%
                summarise(mean_mean=mean(mean_amt), 
                          mean_stdev = mean(std_amt)) -> tidyXsumm
   write.table(x=tidyXsumm, file="tidy_step_5.txt",row.names=FALSE)
 #                                                                 End of part 5
 # -----------------------------------------------------------------------------
-  
