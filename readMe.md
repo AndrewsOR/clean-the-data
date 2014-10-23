@@ -13,10 +13,10 @@ The dataset is available (along with a full description) at <http://archive.ics.
 According to the principles of "tidy data", this HAR dataset is "messy" because observational units span multiple tables.[^hadley]  Training and test data are in separate tables, and the activity identifiers _y_ are separate from the activity measurements _X_ and the subject identifiers:   
 
 
-  |     X         | y            | subject          |
-  |:------------- |:------------ |:---------------- |
-  | X_train (70%) | y_train (70%)| subj_train (70%) |
-  | X_test (30%)  | y_test (30%) | subj_test (30%)  |
+  |     X         | y             | subject          |
+  |:--------------|:--------------|:-----------------|
+  | X_train (70%) | y_train (70%) | subj_train (70%) |
+  | X_test (30%)  | y_test (30%)  | subj_test (30%)  |
   
 Once this table is re-assembled from its parts, it is no longer "messy," but for our purposes it is still not very useful: the activity names are in a separate table from the activity identifiers, and the measurement variable names are in a separate table from the measurement values.  Furthermore, the measurements are a mixture of means and standard deviations, which does not violate tidy-ness but is still rather confusing.  
 
